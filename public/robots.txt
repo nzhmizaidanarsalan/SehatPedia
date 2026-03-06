@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ais-pre-jxsy4vc5q6qudnqn3pmunn-108462607140.asia-southeast1.run.app/sitemap.xml
+Sitemap: https://sehatpedia.netlify.app/sitemap.xml
