@@ -15,7 +15,17 @@ db.exec(`
     imageUrl TEXT NOT NULL,
     readTime INTEGER NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
+  );
+
+  CREATE TABLE IF NOT EXISTS comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    articleId INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (articleId) REFERENCES articles (id) ON DELETE CASCADE
+  );
 `);
 
 // Seed initial data if empty
@@ -67,8 +77,49 @@ async function startServer() {
   app.use(express.json());
 
   // API Routes
+  const ADMIN_USER = 'Apapun12';
+  const ADMIN_PASS = 'adminsehatpedia';
+  const AUTH_TOKEN = 'sehatpedia-secret-token-2026';
+
+  app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      res.json({ token: AUTH_TOKEN });
+    } else {
+      res.status(401).json({ error: 'Username atau password salah' });
+    }
+  });
+
+  const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader === `Bearer ${AUTH_TOKEN}`) {
+      next();
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  };
+
   app.get('/api/articles', (req, res) => {
-    const articles = db.prepare('SELECT * FROM articles ORDER BY createdAt DESC').all();
+    const { category, search } = req.query;
+    let query = 'SELECT * FROM articles';
+    const params: any[] = [];
+    const conditions: string[] = [];
+
+    if (category) {
+      conditions.push('category = ?');
+      params.push(category);
+    }
+    if (search) {
+      conditions.push('(title LIKE ? OR excerpt LIKE ? OR content LIKE ?)');
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+    }
+
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+    query += ' ORDER BY createdAt DESC';
+
+    const articles = db.prepare(query).all(...params);
     res.json(articles);
   });
 
@@ -81,22 +132,60 @@ async function startServer() {
     }
   });
 
-  app.post('/api/articles', (req, res) => {
+  app.post('/api/articles', requireAuth, (req, res) => {
     const { title, excerpt, content, category, imageUrl, readTime } = req.body;
     const insert = db.prepare('INSERT INTO articles (title, excerpt, content, category, imageUrl, readTime) VALUES (?, ?, ?, ?, ?, ?)');
     const info = insert.run(title, excerpt, content, category, imageUrl, readTime);
     res.json({ id: info.lastInsertRowid });
   });
 
-  app.put('/api/articles/:id', (req, res) => {
+  app.put('/api/articles/:id', requireAuth, (req, res) => {
     const { title, excerpt, content, category, imageUrl, readTime } = req.body;
     const update = db.prepare('UPDATE articles SET title = ?, excerpt = ?, content = ?, category = ?, imageUrl = ?, readTime = ? WHERE id = ?');
     update.run(title, excerpt, content, category, imageUrl, readTime, req.params.id);
     res.json({ success: true });
   });
 
-  app.delete('/api/articles/:id', (req, res) => {
+  app.delete('/api/articles/:id', requireAuth, (req, res) => {
     const del = db.prepare('DELETE FROM articles WHERE id = ?');
+    del.run(req.params.id);
+    res.json({ success: true });
+  });
+
+  // Comments API Routes
+  app.get('/api/articles/:id/comments', (req, res) => {
+    const comments = db.prepare('SELECT id, articleId, name, content, createdAt FROM comments WHERE articleId = ? ORDER BY createdAt DESC').all(req.params.id);
+    res.json(comments);
+  });
+
+  app.post('/api/articles/:id/comments', (req, res) => {
+    const { name, email, content } = req.body;
+    const articleId = req.params.id;
+    
+    if (!name || !email || !content) {
+      return res.status(400).json({ error: 'Nama, email, dan komentar wajib diisi' });
+    }
+
+    const insert = db.prepare('INSERT INTO comments (articleId, name, email, content) VALUES (?, ?, ?, ?)');
+    const info = insert.run(articleId, name, email, content);
+    
+    const newComment = db.prepare('SELECT id, articleId, name, content, createdAt FROM comments WHERE id = ?').get(info.lastInsertRowid);
+    res.json(newComment);
+  });
+
+  // Admin Comments API Route
+  app.get('/api/admin/comments', requireAuth, (req, res) => {
+    const comments = db.prepare(`
+      SELECT c.*, a.title as articleTitle 
+      FROM comments c 
+      JOIN articles a ON c.articleId = a.id 
+      ORDER BY c.createdAt DESC
+    `).all();
+    res.json(comments);
+  });
+
+  app.delete('/api/comments/:id', requireAuth, (req, res) => {
+    const del = db.prepare('DELETE FROM comments WHERE id = ?');
     del.run(req.params.id);
     res.json({ success: true });
   });
@@ -104,7 +193,10 @@ async function startServer() {
   // Vite middleware setup
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { 
+        middlewareMode: true,
+        hmr: { overlay: false }
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);

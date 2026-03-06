@@ -44,36 +44,36 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-secondary">Kategori</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <a className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" href="#">
+          <Link className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" to="/kategori/Penyakit">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-light transition-colors">
               <span className="material-symbols-outlined">coronavirus</span>
             </div>
             <h3 className="font-bold text-sm">Penyakit</h3>
-          </a>
-          <a className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" href="#">
+          </Link>
+          <Link className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" to="/kategori/Nutrisi">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-light transition-colors">
               <span className="material-symbols-outlined">restaurant</span>
             </div>
             <h3 className="font-bold text-sm">Nutrisi</h3>
-          </a>
-          <a className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" href="#">
+          </Link>
+          <Link className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" to="/kategori/Gaya Hidup">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-light transition-colors">
               <span className="material-symbols-outlined">directions_run</span>
             </div>
             <h3 className="font-bold text-sm">Gaya Hidup</h3>
-          </a>
-          <a className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" href="#">
+          </Link>
+          <Link className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" to="/kategori/Kesehatan Mental">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-light transition-colors">
               <span className="material-symbols-outlined">psychology</span>
             </div>
             <h3 className="font-bold text-sm">Kesehatan Mental</h3>
-          </a>
-          <a className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" href="#">
+          </Link>
+          <Link className="flex flex-col items-center gap-3 p-6 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary transition-colors group text-center" to="/kategori/Kesehatan Lansia">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-light transition-colors">
               <span className="material-symbols-outlined">elderly</span>
             </div>
             <h3 className="font-bold text-sm">Kesehatan Lansia</h3>
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -139,16 +139,6 @@ export default function Home() {
                 </div>
               </a>
             </div>
-          </div>
-
-          <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 text-center">
-            <span className="material-symbols-outlined text-4xl text-primary mb-2">mail</span>
-            <h3 className="text-lg font-bold mb-2 text-secondary">Dapatkan Tips Kesehatan Mingguan</h3>
-            <p className="text-sm text-text-muted-light dark:text-text-muted-dark mb-4">Bergabunglah dengan buletin kami dan terima saran kesehatan yang dikurasi langsung ke kotak masuk Anda.</p>
-            <form className="flex flex-col gap-3">
-              <input className="w-full px-4 py-2.5 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm" placeholder="Alamat email Anda" type="email" />
-              <button className="w-full bg-primary hover:bg-primary/90 text-background-light font-bold py-2.5 rounded-lg transition-colors" type="button">Berlangganan Sekarang</button>
-            </form>
           </div>
         </aside>
       </div>

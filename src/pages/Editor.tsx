@@ -18,6 +18,13 @@ export default function Editor() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     if (isEditing) {
       fetch(`/api/articles/${id}`)
         .then(res => res.json())
@@ -50,13 +57,24 @@ export default function Editor() {
 
     const url = isEditing ? `/api/articles/${id}` : '/api/articles';
     const method = isEditing ? 'PUT' : 'POST';
+    const token = localStorage.getItem('adminToken');
 
     fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify(formData)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 401) {
+          localStorage.removeItem('adminToken');
+          navigate('/login');
+          throw new Error('Unauthorized');
+        }
+        return res.json();
+      })
       .then(() => {
         navigate('/admin');
       })
