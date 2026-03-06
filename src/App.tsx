@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import TentangKami from './pages/TentangKami';
 import KebijakanPrivasi from './pages/KebijakanPrivasi';
 import Penyangkalan from './pages/Penyangkalan';
+import Kontak from './pages/Kontak';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="tentang-kami" element={<TentangKami />} />
           <Route path="kebijakan-privasi" element={<KebijakanPrivasi />} />
           <Route path="penyangkalan" element={<Penyangkalan />} />
+          <Route path="kontak" element={<Kontak />} />
           <Route path="admin" element={<Admin />} />
           <Route path="admin/editor" element={<Editor />} />
           <Route path="admin/editor/:id" element={<Editor />} />
